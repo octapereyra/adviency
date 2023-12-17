@@ -11,6 +11,7 @@ function App() {
     const fields = Object.fromEntries(
       new FormData(e.target as HTMLFormElement)
     );
+    if (fields.query === '' || gifts.includes(fields.query.toString())) return;
     setGifts([...gifts, fields.query as string]);
   };
 
