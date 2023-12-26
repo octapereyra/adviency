@@ -1,10 +1,11 @@
 import { FormEvent, useEffect, useState } from 'react';
 import './App.css';
+import { Gift } from './components/Gift';
 
 const regalos = () => {
   const gifts = localStorage.getItem('gifts');
   if (gifts) {
-    return JSON.parse(gifts) as string[];
+    return JSON.parse(gifts) as Gift[];
   } else {
     return [];
   }
@@ -25,14 +26,28 @@ function App() {
     if (fields.query === '') return;
     if (Number.parseInt(fields.giftCount.toString()) > 1) {
       const giftName = `${fields.query} x${fields.giftCount.toString()}`;
-      setGifts([...gifts, giftName]);
+      setGifts([
+        ...gifts,
+        {
+          id: crypto.randomUUID(),
+          description: giftName,
+          imgUrl: fields.imageUrl.toString(),
+        },
+      ]);
     } else {
-      setGifts([...gifts, fields.query as string]);
+      setGifts([
+        ...gifts,
+        {
+          id: crypto.randomUUID(),
+          description: fields.query.toString(),
+          imgUrl: fields.imageUrl.toString(),
+        },
+      ]);
     }
   };
 
   const handleDelete = (giftSelected: string) => () => {
-    setGifts(gifts.filter((gift) => gift !== giftSelected));
+    setGifts(gifts.filter((gift) => gift.description !== giftSelected));
   };
 
   const deleteAll = () => {
@@ -41,14 +56,21 @@ function App() {
 
   return (
     <div className="flex flex-row justify-center h-screen">
-      <div className="flex flex-col justify-center items-center gap-2 w-[450px]">
+      <div className="flex flex-col justify-center items-center gap-2 w-[700px]">
         <main className=" bg-red-200 p-10 rounded-md">
           <h1 className=" font-bold text-5xl">Regalos:</h1>
-          <form className="flex justify-between p-2" onSubmit={handleSubmit}>
+          <form className="flex gap-4 p-2" onSubmit={handleSubmit}>
             <input
               type="text"
               name="query"
-              className="h-9 w-2/3 border-solid border-black border rounded"
+              placeholder="Regalo..."
+              className="h-9 w-1/2 border-solid border-black border rounded"
+            ></input>
+            <input
+              type="text"
+              name="imageUrl"
+              placeholder="Link de la imagen..."
+              className="h-9 w-1/2 border-solid border-black border rounded"
             ></input>
             <input
               type="number"
@@ -68,11 +90,15 @@ function App() {
           )}
           <ul className="">
             {gifts.map((gift) => (
-              <li key={gift} className="flex justify-between p-1">
-                {gift}
+              <li
+                key={gift.id}
+                className="flex justify-between items-center p-1"
+              >
+                <img src={gift.imgUrl} className=" w-auto h-12"></img>
+                <span className=" text-left">{gift.description}</span>
                 <button
-                  className="bg-red-600 text-white rounded-md w-4 hover:bg-red-700"
-                  onClick={handleDelete(gift)}
+                  className="bg-red-600 text-white rounded-md w-4 h-6 hover:bg-red-700"
+                  onClick={handleDelete(gift.description)}
                 >
                   X
                 </button>
