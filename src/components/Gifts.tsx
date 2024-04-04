@@ -37,6 +37,7 @@ export function Gifts() {
         {
           id: crypto.randomUUID(),
           description: giftName,
+          destinatary: fields.destinatary.toString(),
           imgUrl: fields.imageUrl.toString(),
         },
       ]);
@@ -46,6 +47,7 @@ export function Gifts() {
         {
           id: crypto.randomUUID(),
           description: fields.query.toString(),
+          destinatary: fields.destinatary.toString(),
           imgUrl: fields.imageUrl.toString(),
         },
       ]);
@@ -87,6 +89,12 @@ export function Gifts() {
               className="h-9 w-full border-solid border-black border rounded"
             ></input>
             <input
+              type="text"
+              name="destinatary"
+              placeholder="Destinatario..."
+              className="h-9 w-full border-solid border-black border rounded"
+            ></input>
+            <input
               type="number"
               name="giftCount"
               placeholder="Cantidad..."
@@ -109,7 +117,8 @@ export function Gifts() {
         {gifts.map((gift) => (
           <li key={gift.id} className="flex justify-between items-center p-1">
             <img src={gift.imgUrl} className=" w-auto h-12"></img>
-            <span className=" text-left">{gift.description}</span>
+            <span className=" font-semibold">{gift.description}</span>
+            <span className="">{gift.destinatary}</span>
             <button
               className="bg-red-600 text-white rounded-full w-6 h-6 hover:bg-red-700"
               onClick={handleDelete(gift.id)}
